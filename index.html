@@ -1382,7 +1382,7 @@ function renderExportTable(students) {
 
 function exportCSV() {
   const students = loadStudents();
-  const headers = ['اللقب','الاسم','ي١ ب_العصر','ي١ ب20','ي٢ ق20','ي٢ ب20','ي٣ ق20','ي٣ ب20','النتيجة','التاريخ','اليوم الدراسي'];
+  const headers = ['اللقب','الاسم','ي١ ب_العصر','ي١ ب_المغرب','ي٢ ب_العصر','ي٢ ب_المغرب','ي٣ ب_العصر','ي٣ ب_المغرب','النتيجة','التاريخ','اليوم الدراسي'];
   const rows = students.map(s => [
     s.nom, s.prenom,
     ...ALL_SLOTS.map(k => s.slots[k]==='present'?'ح':s.slots[k]==='absent'?'غ':'—'),
