@@ -60,9 +60,11 @@ input { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-ra
 
 <div class="page active" id="page-landing">
   <div class="header">
-    <h1>الدورة العلمية الربيعية لعام 1477/2026</h1>
-    <h1>نظام تسجيل الحضور</h1>
-    <p>مرحباً بكم</p>
+     <h1>- جمعية العلماء المسلمين الجزائريين - وهران</h1>
+     <h1> - نادي البصائر - كاسطور </h1>
+     <h1>الدورة العلمية الربيعية 2026/1447</h1>
+     <h1>نظام تسجيل الحضور</h1>
+     <p>مرحباً بكم</p>
   </div>
   <button class="btn-submit" style="margin-bottom:15px" onclick="showPage('page-student')">📱 أنا طالب - تسجيل</button>
   <button class="btn-submit" style="background:#444" onclick="showPage('page-login')">🔐 فضاء الإدارة </button>
@@ -120,6 +122,14 @@ input { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-ra
     <br>
     <button class="btn-submit" style="background:var(--green)" onclick="exportCSV()">⬇️ تحميل Excel</button>
     <button class="btn-submit" style="background:var(--red); margin-top:10px" onclick="clearData()">🗑️ مسح كل البيانات</button>
+    <div class="page" id="page-success">
+    <div style="text-align:center; margin-top: 50px;">
+        <h1 style="font-size:60px">🎉</h1>
+        <h2>تم التسجيل بنجاح!</h2>
+        <p id="success-msg"></p>
+        <br>
+        <button class="btn-submit" onclick="location.reload()">العودة للرئيسية</button>
+    </div>
 </div>
 
 <script>
