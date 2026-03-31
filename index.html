@@ -756,7 +756,7 @@ tr:last-child td { border-bottom: none; }
     <button class="land-btn land-btn-admin" onclick="showPage('page-admin-login')">
       <span class="land-btn-icon">🔐</span>
       <span class="land-btn-text">
-        <span class="land-btn-title">فضاء الأستاذ</span>
+        <span class="land-btn-title">فضاء الإدارة</span>
         <span class="land-btn-desc">عرض الحضور وإدارة القائمة وتصدير التقارير</span>
       </span>
     </button>
@@ -819,7 +819,7 @@ tr:last-child td { border-bottom: none; }
   <div class="bg-orb orb1"></div>
   <div class="login-card">
     <div class="login-icon">🔐</div>
-    <div class="login-title">فضاء الأستاذ</div>
+    <div class="login-title">فضاء الإدارة</div>
     <div class="login-sub">أدخل كلمة مرور المشرف للدخول</div>
     <div class="login-error" id="login-err">❌ كلمة المرور غير صحيحة</div>
     <div class="field">
@@ -1126,13 +1126,13 @@ function prepareStudentForm() {
           <div class="slots-grid">
             <button class="slot-btn-item" id="sp-${mkKey}" onclick="cycleSlot('${mkKey}')">
               <span class="slot-emoji">☀️</span>
-              <span class="slot-label">قبل الساعة 20:00</span>
+              <span class="slot-label">بعد العصر</span>
               <span class="slot-time">الحصة الأولى</span>
               <span class="slot-badge" id="ss-${mkKey}">غير محدد</span>
             </button>
             <button class="slot-btn-item" id="sp-${ekKey}" onclick="cycleSlot('${ekKey}')">
               <span class="slot-emoji">🌙</span>
-              <span class="slot-label">بعد الساعة 20:00</span>
+              <span class="slot-label">بعد المغرب</span>
               <span class="slot-time">الحصة الثانية</span>
               <span class="slot-badge" id="ss-${ekKey}">غير محدد</span>
             </button>
@@ -1195,8 +1195,8 @@ function submitPresence(dayN) {
   document.getElementById('suc-summary').innerHTML = `
     <div class="sum-row"><span class="sum-label">اليوم الدراسي</span><span style="color:var(--gold);font-weight:700">${DAY_NAMES[dayN]}</span></div>
     <div class="sum-row"><span class="sum-label">التاريخ</span><span style="color:var(--text-soft)">${formatDateAR(getDayDate(dayN))}</span></div>
-    ${slotLine(mk, '☀️ قبل 20:00')}
-    ${slotLine(ek, '🌙 بعد 20:00')}
+    ${slotLine(mk, '☀️بعد العصر')}
+    ${slotLine(ek, '🌙 بعد المغرب')}
   `;
   showPage('page-success');
 }
@@ -1322,7 +1322,7 @@ function studentRowHTML(s) {
 
 function slotTagHTML(val, period) {
   const icon = period === 'morning' ? '☀️' : '🌙';
-  const label = period === 'morning' ? 'قبل 20:00' : 'بعد 20:00';
+  const label = period === 'morning' ? ' : 'بعد 20:00';
   if (val === 'present') return `<span class="slot-tag ${period==='morning'?'st-p-m':'st-p-e'}">${icon} حاضر</span>`;
   if (val === 'absent') return `<span class="slot-tag st-absent">${icon} غائب</span>`;
   return `<span class="slot-tag st-none">${icon} —</span>`;
