@@ -97,10 +97,10 @@ input:focus { border-color: var(--accent); }
         <p style="text-align:center; font-size: 14px; margin-bottom: 10px;">اختر الحصص التي حضرتها:</p>
         <div class="slot-grid">
             <button class="slot-btn" id="btn-m" onclick="toggleSlot('m')">
-                <span class="slot-emoji">☀️</span> الصباح
+                <span class="slot-emoji">☀️</span>بعد العصر
             </button>
             <button class="slot-btn" id="btn-e" onclick="toggleSlot('e')">
-                <span class="slot-emoji">🌙</span> المساء
+                <span class="slot-emoji">🌙</span> بعد المغرب
             </button>
         </div>
         <button class="submit-btn" onclick="submitPresence()">تأكيد التسجيل ✅</button>
@@ -201,8 +201,8 @@ function loadAdminData() {
     db.reverse().forEach(r => {
         html += `<div class="admin-list-item">
             <b>${r.n} ${r.p}</b> <br>
-            <span style="font-size:12px; color:${r.m==='حاضر'?'var(--green)':'var(--text-muted)'}">صباح: ${r.m}</span> | 
-            <span style="font-size:12px; color:${r.e==='حاضر'?'var(--green)':'var(--text-muted)'}">مساء: ${r.e}</span>
+            <span style="font-size:12px; color:${r.m==='حاضر'?'var(--green)':'var(--text-muted)'}"بعد العصر: ${r.m}</span> | 
+            <span style="font-size:12px; color:${r.e==='حاضر'?'var(--green)':'var(--text-muted)'}">بعد المغرب: ${r.e}</span>
             <div style="font-size:10px; opacity:0.5; margin-top:5px;">${r.d} - ${r.t}</div>
         </div>`;
     });
