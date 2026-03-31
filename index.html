@@ -1,235 +1,1457 @@
-
-<>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>تسجيل الحضور — QR</title>
+<title>نظام الحضور - QR</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@400;600;700;900&display=swap');
 
 :root {
-  --bg: #f5f0e8;
-  --surface: #ffffff;
-  --border: #e2ddd4;
-  --accent: #1a1a2e;
-  --green: #2d6a4f;
-  --green-light: #d8f3dc;
-  --red: #c1121f;
-  --red-light: #ffe5e5;
-  --text: #1a1a2e;
-  --text-muted: #7a7a8c;
+  --bg: #0a0e1a;
+  --surface: #111827;
+  --card: #1a2235;
+  --border: #2a3548;
+  --accent: #1d6fa4;
+  --gold: #f0a500;
+  --gold-light: rgba(240,165,0,0.12);
+  --green: #10b981;
+  --green-light: rgba(16,185,129,0.12);
+  --red: #ef4444;
+  --red-light: rgba(239,68,68,0.12);
+  --blue: #3b82f6;
+  --blue-light: rgba(59,130,246,0.12);
+  --text: #f1f5f9;
+  --text-muted: #64748b;
+  --text-soft: #94a3b8;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,0.6);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-body { background: var(--bg); color: var(--text); max-width: 430px; margin: 0 auto; }
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  direction: rtl;
+}
 
-.page { display: none; min-height: 100vh; flex-direction: column; padding: 20px; }
+/* ======= PAGES ======= */
+.page { display: none; min-height: 100vh; flex-direction: column; }
 .page.active { display: flex; }
 
-/* Header */
-.header { background: var(--accent); color: white; padding: 30px 20px; border-radius: 0 0 20px 20px; margin: -20px -20px 20px -20px; text-align: center; }
-.header h1 { font-size: 24px; }
+/* ======= LANDING ======= */
+#page-landing {
+  background: var(--bg);
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+.orb1 { width: 280px; height: 280px; background: rgba(29,111,164,0.2); top: -80px; left: -60px; }
+.orb2 { width: 200px; height: 200px; background: rgba(240,165,0,0.12); bottom: 100px; right: -40px; }
 
-/* Form Card */
-.card { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text-muted); }
-input { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px; margin-bottom: 15px; text-align: right; font-size: 16px; }
+.landing-icon { font-size: 56px; text-align: center; margin-bottom: 16px; animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 
-/* Slots */
-.day-label { background: var(--accent); color: white; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; }
-.slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.slot-btn { padding: 15px; border: 1px solid var(--border); border-radius: 10px; background: #f9f9f9; cursor: pointer; transition: 0.2s; }
-.slot-btn.active { background: var(--green-light); border-color: var(--green); color: var(--green); font-weight: bold; }
-.slot-btn:disabled { opacity: 0.5; cursor: not-allowed; background: #eee; }
+.landing-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+.landing-title span { color: var(--gold); }
+.landing-sub {
+  color: var(--text-muted);
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.landing-date-badge {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 6px 18px;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 700;
+  text-align: center;
+  margin: 0 auto 48px;
+  display: inline-block;
+  width: 100%;
+}
 
-.btn-submit { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
+.land-btns { width: 100%; display: flex; flex-direction: column; gap: 14px; position: relative; z-index: 1; }
+.land-btn {
+  width: 100%;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: none;
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-align: right;
+}
+.land-btn:active { transform: scale(0.97); }
+.land-btn-student {
+  background: linear-gradient(135deg, var(--gold) 0%, #e09000 100%);
+  color: #0a0e1a;
+  box-shadow: 0 6px 24px rgba(240,165,0,0.3);
+}
+.land-btn-admin {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.land-btn-icon { font-size: 26px; flex-shrink: 0; }
+.land-btn-text { flex: 1; }
+.land-btn-title { font-size: 16px; display: block; }
+.land-btn-desc { font-size: 11px; font-weight: 400; opacity: 0.65; font-family: 'Tajawal', sans-serif; }
 
-/* Admin Stats */
-.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-.stat-item { background: white; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid var(--border); }
-.stat-num { font-size: 24px; font-weight: 800; color: var(--accent); }
+/* ======= PAGE HEADER ======= */
+.page-header {
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+  padding: 50px 20px 20px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.back-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.page-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text);
+}
+.page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
 
-.locked-msg { font-size: 12px; color: var(--red); margin-top: 5px; }
+/* ======= QR SCAN PAGE ======= */
+.scan-body { padding: 20px; flex: 1; }
+.info-card {
+  background: var(--gold-light);
+  border: 1px solid rgba(240,165,0,0.3);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.6;
+}
+.qr-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+.qr-card-title { font-family: 'Cairo', sans-serif; font-size: 16px; font-weight: 900; margin-bottom: 6px; }
+.qr-card-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+#qr-display { display: flex; justify-content: center; margin-bottom: 16px; }
+#qr-display canvas, #qr-display img { border-radius: 10px; border: 4px solid #fff; }
+.qr-url-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 11px;
+  color: var(--text-muted);
+  word-break: break-all;
+  text-align: left;
+  direction: ltr;
+  margin-bottom: 10px;
+}
+.copy-btn {
+  width: 100%;
+  padding: 11px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ======= STUDENT FORM ======= */
+#page-student { background: var(--bg); }
+.student-body { padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 32px; }
+
+/* Day indicator */
+.day-indicator {
+  background: linear-gradient(135deg, var(--accent) 0%, #1557a0 100%);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(29,111,164,0.35);
+}
+.day-ind-right { }
+.day-ind-label { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 2px; }
+.day-ind-name { font-family: 'Cairo', sans-serif; font-size: 20px; font-weight: 900; color: #fff; }
+.day-ind-date { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+.day-ind-icon { font-size: 36px; }
+
+.no-session-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px 24px;
+  text-align: center;
+}
+.no-session-icon { font-size: 52px; margin-bottom: 14px; }
+.no-session-title { font-family: 'Cairo', sans-serif; font-size: 18px; font-weight: 900; color: var(--text); margin-bottom: 8px; }
+.no-session-sub { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+.form-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+.form-section-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.field input {
+  width: 100%;
+  padding: 13px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  direction: rtl;
+}
+.field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(29,111,164,0.15); }
+.field input::placeholder { color: var(--text-muted); }
+
+/* SLOTS */
+.slots-block {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.slots-header {
+  background: var(--accent);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.slots-header-title { font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 900; color: #fff; }
+.slots-header-date { font-size: 11px; color: rgba(255,255,255,0.65); }
+.slots-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.slot-btn-item {
+  padding: 18px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: 'Tajawal', sans-serif;
+  transition: background 0.15s;
+  position: relative;
+}
+.slot-btn-item:first-child { border-left: 1px solid var(--border); }
+.slot-emoji { font-size: 26px; }
+.slot-label { font-size: 12px; font-weight: 700; color: var(--text-soft); }
+.slot-time { font-size: 10px; color: var(--text-muted); }
+.slot-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--border);
+  color: var(--text-muted);
+  transition: all 0.2s;
+  font-family: 'Cairo', sans-serif;
+}
+.slot-btn-item.present .slot-badge { background: var(--green-light); color: var(--green); border: 1px solid var(--green); }
+.slot-btn-item.absent .slot-badge { background: var(--red-light); color: var(--red); border: 1px solid var(--red); }
+.slot-btn-item.present { background: rgba(16,185,129,0.04); }
+.slot-btn-item.absent { background: rgba(239,68,68,0.04); }
+
+.slot-hint { font-size: 11px; color: var(--text-muted); text-align: center; padding: 8px; border-top: 1px solid var(--border); }
+
+.submit-btn {
+  width: 100%;
+  padding: 17px;
+  background: linear-gradient(135deg, var(--gold) 0%, #d48f00 100%);
+  color: #0a0e1a;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 17px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(240,165,0,0.3);
+  transition: transform 0.15s;
+  letter-spacing: 0.3px;
+}
+.submit-btn:active { transform: scale(0.97); }
+
+/* ======= SUCCESS ======= */
+#page-success {
+  background: var(--bg);
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.suc-orb { position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none; }
+.suc-orb1 { width: 250px; height: 250px; background: rgba(16,185,129,0.15); top: -50px; right: -50px; }
+.suc-orb2 { width: 200px; height: 200px; background: rgba(240,165,0,0.1); bottom: 50px; left: -50px; }
+
+.suc-ring {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: var(--green-light);
+  border: 3px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44px;
+  margin: 0 auto 24px;
+  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative; z-index: 1;
+}
+@keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+.suc-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 6px;
+  position: relative; z-index: 1;
+}
+.suc-name { color: var(--gold); }
+.suc-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.7; position: relative; z-index: 1; }
+
+.suc-summary {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  width: 100%;
+  margin-bottom: 28px;
+  position: relative; z-index: 1;
+}
+.sum-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+}
+.sum-row + .sum-row { border-top: 1px solid var(--border); }
+.sum-label { color: var(--text-muted); }
+
+.new-btn {
+  padding: 14px 36px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative; z-index: 1;
+}
+
+/* ======= ADMIN LOGIN ======= */
+#page-admin-login {
+  background: var(--bg);
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.login-card {
+  width: 100%;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 32px 24px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  position: relative; z-index: 1;
+}
+.login-icon { font-size: 44px; text-align: center; margin-bottom: 10px; }
+.login-title { font-family: 'Cairo', sans-serif; font-size: 22px; font-weight: 900; text-align: center; margin-bottom: 6px; }
+.login-sub { text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+.login-error { color: var(--red); font-size: 13px; text-align: center; margin-bottom: 10px; display: none; }
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--accent), #1557a0);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 4px 20px rgba(29,111,164,0.3);
+}
+.back-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ======= ADMIN DASHBOARD ======= */
+#page-admin { background: var(--bg); }
+.admin-header {
+  background: var(--surface);
+  padding: 50px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.admin-header-row { display: flex; justify-content: space-between; align-items: center; }
+.admin-title { font-family: 'Cairo', sans-serif; font-size: 22px; font-weight: 900; }
+.logout-btn {
+  background: var(--red-light);
+  border: 1px solid var(--red);
+  color: var(--red);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Tajawal', sans-serif;
+}
+.admin-date-row { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+.admin-body { padding: 16px; flex: 1; overflow-y: auto; padding-bottom: 32px; }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 16px; }
+.stat-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.stat-n { font-family: 'Cairo', sans-serif; font-size: 36px; font-weight: 900; }
+.stat-l { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
+.n-gold { color: var(--gold); }
+.n-green { color: var(--green); }
+.n-blue { color: var(--blue); }
+.n-red { color: var(--red); }
+
+/* ADMIN TABS */
+.admin-tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 2px; }
+.admin-tabs::-webkit-scrollbar { display: none; }
+.atab {
+  flex-shrink: 0;
+  padding: 9px 14px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.atab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* LIST */
+.section-lbl { font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 900; margin-bottom: 12px; color: var(--text); }
+
+.student-row {
+  background: var(--card);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.student-row:hover { border-color: var(--accent); }
+.srow-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  gap: 12px;
+  cursor: pointer;
+}
+.srow-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #1557a0);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.srow-info { flex: 1; min-width: 0; }
+.srow-name { font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; }
+.srow-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.srow-side { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.dots-row { display: flex; gap: 3px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.dot.p { background: var(--green); }
+.dot.a { background: var(--red); }
+.dot.h { background: var(--gold); }
+.chev { color: var(--text-muted); font-size: 14px; transition: transform 0.2s; }
+.chev.open { transform: rotate(90deg); }
+
+.srow-detail { display: none; padding: 14px; border-top: 1px solid var(--border); }
+.srow-detail.open { display: block; }
+.detail-days { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.detail-day-col {
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 10px 6px;
+  text-align: center;
+}
+.dd-title { font-family: 'Cairo', sans-serif; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+.dd-date { font-size: 9px; color: var(--text-muted); margin-bottom: 6px; }
+.slot-tag {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 5px;
+  margin: 2px auto;
+  width: fit-content;
+  font-family: 'Cairo', sans-serif;
+}
+.st-p-m { background: rgba(240,165,0,0.15); color: var(--gold); }
+.st-p-e { background: var(--blue-light); color: var(--blue); }
+.st-absent { background: var(--red-light); color: var(--red); }
+.st-none { background: var(--border); color: var(--text-muted); }
+
+.del-btn {
+  width: 100%;
+  padding: 9px;
+  background: var(--red-light);
+  color: var(--red);
+  border: 1px solid var(--red);
+  border-radius: 8px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* SLOT BARS */
+.slot-bar { margin-bottom: 12px; }
+.bar-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+.bar-track { height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.7s ease; }
+
+/* QR SECTION */
+.qr-admin-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+}
+.qr-admin-title { font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 900; margin-bottom: 6px; }
+.qr-admin-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+#admin-qr { display: flex; justify-content: center; margin-bottom: 16px; }
+#admin-qr canvas, #admin-qr img { border-radius: 10px; border: 4px solid #fff; }
+
+/* EXPORT */
+.exp-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.exp-csv { background: var(--green); color: #fff; box-shadow: 0 4px 16px rgba(16,185,129,0.3); }
+.exp-reset { background: var(--red-light); color: var(--red); border: 1px solid var(--red); }
+.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 520px; direction: rtl; }
+th {
+  background: var(--surface);
+  padding: 10px 10px;
+  text-align: right;
+  font-family: 'Cairo', sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+td { padding: 9px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; text-align: right; font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+.tp { color: var(--green); font-weight: 700; }
+.ta { color: var(--red); font-weight: 700; }
+.tn { color: var(--text-muted); }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 48px 20px; }
+.empty-icon { font-size: 52px; margin-bottom: 12px; }
+.empty-title { font-family: 'Cairo', sans-serif; font-size: 17px; font-weight: 900; margin-bottom: 6px; }
+.empty-sub { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 11px 24px;
+  border-radius: 30px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 9999;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* CONFIG PANEL */
+.config-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.config-title { font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 900; margin-bottom: 14px; color: var(--gold); }
+.config-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.config-label { font-size: 13px; color: var(--text-soft); }
+.config-date {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 13px;
+  outline: none;
+  direction: ltr;
+}
+.save-config-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  margin-top: 6px;
+}
 </style>
 </head>
 <body>
 
+<!-- ======= LANDING ======= -->
 <div class="page active" id="page-landing">
-  <div class="header">
-     <h1>- جمعية العلماء المسلمين الجزائريين - وهران</h1>
-     <h1> - نادي البصائر - كاسطور </h1>
-     <h1>الدورة العلمية الربيعية 2026/1447</h1>
-     <h1>نظام تسجيل الحضور</h1>
-     <p>مرحباً بكم</p>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+  <div class="landing-icon">🎓</div>
+  <div class="landing-title">نظام <span>الحضور</span></div>
+  <div class="landing-sub">تسجيل حضور الطلاب بواسطة رمز QR</div>
+  <div class="landing-date-badge" id="landing-date">📅 جارٍ تحميل التاريخ...</div>
+  <div class="land-btns">
+    <button class="land-btn land-btn-student" onclick="showPage('page-student'); prepareStudentForm()">
+      <span class="land-btn-icon">📱</span>
+      <span class="land-btn-text">
+        <span class="land-btn-title">أنا طالب — تسجيل الحضور</span>
+        <span class="land-btn-desc">أدخل اسمك وسجّل حضورك لهذا اليوم</span>
+      </span>
+    </button>
+    <button class="land-btn land-btn-admin" onclick="showPage('page-admin-login')">
+      <span class="land-btn-icon">🔐</span>
+      <span class="land-btn-text">
+        <span class="land-btn-title">فضاء الأستاذ</span>
+        <span class="land-btn-desc">عرض الحضور وإدارة القائمة وتصدير التقارير</span>
+      </span>
+    </button>
+    <button class="land-btn land-btn-admin" onclick="showPage('page-scan')" style="border-color:rgba(240,165,0,0.3);color:var(--gold)">
+      <span class="land-btn-icon">📲</span>
+      <span class="land-btn-text">
+        <span class="land-btn-title">رمز QR للطلاب</span>
+        <span class="land-btn-desc">اعرض الرمز في القاعة ليمسحه الطلاب</span>
+      </span>
+    </button>
   </div>
-  <button class="btn-submit" style="margin-bottom:15px" onclick="showPage('page-student')">📱 أنا طالب - تسجيل</button>
-  <button class="btn-submit" style="background:#444" onclick="showPage('page-login')">🔐 فضاء الإدارة </button>
 </div>
 
+<!-- ======= QR PAGE ======= -->
+<div class="page" id="page-scan">
+  <div class="page-header">
+    <button class="back-btn" onclick="showPage('page-landing')">→ رجوع</button>
+    <div class="page-title">📲 رمز QR للحضور</div>
+    <div class="page-subtitle">أعرضه في القاعة ليمسحه الطلاب</div>
+  </div>
+  <div class="scan-body">
+    <div class="info-card">
+      💡 يمسح الطالب هذا الرمز بكاميرا هاتفه، يفتح النموذج مباشرة ويسجّل حضوره لليوم الحالي فقط.
+    </div>
+    <div class="qr-card">
+      <div class="qr-card-title">رمز الدخول</div>
+      <div class="qr-card-desc" id="qr-day-label">اليوم الدراسي الحالي</div>
+      <div id="qr-display"></div>
+      <div class="qr-url-box" id="qr-url-text"></div>
+      <button class="copy-btn" onclick="copyLink()">📋 نسخ الرابط</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= STUDENT FORM ======= -->
 <div class="page" id="page-student">
-  <div class="header">
-    <h1>تسجيل حضوري</h1>
+  <div class="page-header">
+    <button class="back-btn" onclick="showPage('page-landing')">→ رجوع</button>
+    <div class="page-title">✏️ تسجيل الحضور</div>
+    <div class="page-subtitle" id="student-header-sub">أدخل بياناتك وسجّل حضورك</div>
   </div>
-  <div class="card">
-    <label>اللقب (Nom)</label>
-    <input type="text" id="nom" placeholder="أدخل لقبك">
-    <label>الاسم (Prénom)</label>
-    <input type="text" id="prenom" placeholder="أدخل اسمك">
+  <div class="student-body" id="student-body-content">
+    <!-- Injected dynamically -->
   </div>
-
-  <div class="card">
-    <div class="day-label" id="current-day-label">جاري التحميل...</div>
-    <p style="font-size: 12px; margin-bottom: 10px;">انقر لتحديد الفترات التي حضرتها اليوم:</p>
-    <div class="slots">
-      <button class="slot-btn" id="btn-m" onclick="toggleSlot('m')">☀️ بعد العصر</button>
-      <button class="slot-btn" id="btn-e" onclick="toggleSlot('e')">🌙 بعد المغرب</button>
-    </div>
-    <p class="locked-msg" id="lock-notice">⚠️ لا يمكن تسجيل الحضور إلا لليوم الحالي.</p>
-  </div>
-  <button class="btn-submit" onclick="submitPresence()">✅ تأكيد الحضور</button>
 </div>
 
+<!-- ======= SUCCESS ======= -->
 <div class="page" id="page-success">
-    <div style="text-align:center; margin-top: 50px;">
-        <h1 style="font-size:60px">🎉</h1>
-        <h2>تم التسجيل بنجاح!</h2>
-        <p id="success-msg"></p>
-        <br>
-        <button class="btn-submit" onclick="location.reload()">العودة للرئيسية</button>
-    </div>
+  <div class="suc-orb suc-orb1"></div>
+  <div class="suc-orb suc-orb2"></div>
+  <div class="suc-ring">✓</div>
+  <div class="suc-title">تم تسجيل حضور<br><span class="suc-name" id="suc-name"></span></div>
+  <div class="suc-sub">تم حفظ حضورك بنجاح ✨<br>شكراً لك!</div>
+  <div class="suc-summary" id="suc-summary"></div>
+  <button class="new-btn" onclick="resetAndGoBack()">+ تسجيل حضور آخر</button>
 </div>
 
-<div class="page" id="page-login">
-    <div class="header"><h1>دخول الأستاذ</h1></div>
-    <div class="card">
-        <label>كلمة السر</label>
-        <input type="password" id="pwd">
-        <button class="btn-submit" onclick="login()">دخول</button>
+<!-- ======= ADMIN LOGIN ======= -->
+<div class="page" id="page-admin-login">
+  <div class="bg-orb orb1"></div>
+  <div class="login-card">
+    <div class="login-icon">🔐</div>
+    <div class="login-title">فضاء الأستاذ</div>
+    <div class="login-sub">أدخل كلمة مرور المشرف للدخول</div>
+    <div class="login-error" id="login-err">❌ كلمة المرور غير صحيحة</div>
+    <div class="field">
+      <label>كلمة المرور</label>
+      <input type="password" id="admin-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" style="direction:ltr;text-align:center">
     </div>
+    <button class="login-btn" onclick="doLogin()">🔓 دخول</button>
+    <div class="back-link" onclick="showPage('page-landing')">→ العودة إلى الرئيسية</div>
+  </div>
 </div>
 
+<!-- ======= ADMIN DASHBOARD ======= -->
 <div class="page" id="page-admin">
-    <div class="header"><h1>لوحة التحكم</h1></div>
-    <div class="stat-grid">
-        <div class="stat-item"><div class="stat-num" id="count">0</div><div>الطلاب</div></div>
-        <div class="stat-item"><div class="stat-num">📅</div><div id="admin-date"></div></div>
+  <div class="admin-header">
+    <div class="admin-header-row">
+      <div class="admin-title">📊 لوحة التحكم</div>
+      <button class="logout-btn" onclick="logout()">خروج 🚪</button>
     </div>
-    <div id="student-list"></div>
-    <br>
-    <button class="btn-submit" style="background:var(--green)" onclick="exportCSV()">⬇️ تحميل Excel</button>
-    <button class="btn-submit" style="background:var(--red); margin-top:10px" onclick="clearData()">🗑️ مسح كل البيانات</button>
-    <div class="page" id="page-success">
-    <div style="text-align:center; margin-top: 50px;">
-</div>
-      <div class="page" id="page-success">
-    <div style="text-align:center; margin-top: 50px;">
-        <h1 style="font-size:60px">🎉</h1>
-        <h2>تم التسجيل بنجاح!</h2>
-        <p id="success-msg"></p>
-        <br>
-        <button class="btn-submit" onclick="location.reload()">العودة للرئيسية</button>
+    <div class="admin-date-row" id="admin-date-row"></div>
+  </div>
+  <div class="admin-body">
+    <div class="stats-grid">
+      <div class="stat-tile"><div class="stat-n n-gold" id="a-total">0</div><div class="stat-l">إجمالي الطلاب</div></div>
+      <div class="stat-tile"><div class="stat-n n-green" id="a-full">0</div><div class="stat-l">حضور كامل</div></div>
+      <div class="stat-tile"><div class="stat-n n-blue" id="a-partial">0</div><div class="stat-l">حضور جزئي</div></div>
+      <div class="stat-tile"><div class="stat-n n-red" id="a-zero">0</div><div class="stat-l">غائب تماماً</div></div>
     </div>
+
+    <div class="admin-tabs">
+      <button class="atab active" onclick="switchTab('list')">👥 القائمة</button>
+      <button class="atab" onclick="switchTab('stats')">📈 الإحصاء</button>
+      <button class="atab" onclick="switchTab('config')">⚙️ الأيام</button>
+      <button class="atab" onclick="switchTab('qr')">📲 QR</button>
+      <button class="atab" onclick="switchTab('export')">⬇️ تصدير</button>
+    </div>
+
+    <!-- LIST -->
+    <div id="atab-list">
+      <div class="section-lbl" id="list-count-lbl">الطلاب المسجلون</div>
+      <div id="admin-list-container"></div>
+    </div>
+
+    <!-- STATS -->
+    <div id="atab-stats" style="display:none">
+      <div class="section-lbl">نسبة الحضور لكل حصة</div>
+      <div class="config-card" style="padding:16px">
+        <div id="slot-bars"></div>
+      </div>
+    </div>
+
+    <!-- CONFIG (Day Dates) -->
+    <div id="atab-config" style="display:none">
+      <div class="config-card">
+        <div class="config-title">⚙️ تحديد تواريخ الأيام الدراسية</div>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.7">
+          حدّد التاريخ لكل يوم دراسي. سيرى الطالب فقط حصص اليوم الذي يتطابق مع تاريخ جهازه.
+        </p>
+        <div class="config-row">
+          <span class="config-label">📅 اليوم الأول</span>
+          <input type="date" class="config-date" id="cfg-day1">
+        </div>
+        <div class="config-row">
+          <span class="config-label">📅 اليوم الثاني</span>
+          <input type="date" class="config-date" id="cfg-day2">
+        </div>
+        <div class="config-row">
+          <span class="config-label">📅 اليوم الثالث</span>
+          <input type="date" class="config-date" id="cfg-day3">
+        </div>
+        <button class="save-config-btn" onclick="saveDayConfig()">💾 حفظ الإعدادات</button>
+      </div>
+      <div class="config-card" style="background:var(--gold-light);border-color:rgba(240,165,0,0.3)">
+        <div style="font-size:12px;color:var(--gold);line-height:1.8">
+          💡 <strong>كيف يعمل ذلك؟</strong><br>
+          عندما يفتح الطالب التطبيق، يتحقق النظام من تاريخ هاتفه ويعرض له <strong>فقط حصص اليوم المقابل</strong>. إذا كان التاريخ لا يتطابق مع أي يوم، يظهر له رسالة "لا توجد حصة اليوم".
+        </div>
+      </div>
+    </div>
+
+    <!-- QR -->
+    <div id="atab-qr" style="display:none">
+      <div class="qr-admin-card">
+        <div class="qr-admin-title">📲 رمز QR للعرض في القاعة</div>
+        <div class="qr-admin-sub">اعرض هذا الرمز على الشاشة. يمسحه الطلاب بهواتفهم ويفتح النموذج مباشرة.</div>
+        <div id="admin-qr"></div>
+        <div class="qr-url-box" id="admin-qr-url" style="margin-bottom:10px"></div>
+        <button class="copy-btn" onclick="copyLink()">📋 نسخ الرابط</button>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div id="atab-export" style="display:none">
+      <button class="exp-btn exp-csv" onclick="exportCSV()">⬇️ تصدير ملف Excel (CSV)</button>
+      <button class="exp-btn exp-reset" onclick="resetAll()">🗑️ حذف جميع البيانات</button>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>اللقب</th><th>الاسم</th>
+            <th>ي١☀️</th><th>ي١🌙</th>
+            <th>ي٢☀️</th><th>ي٢🌙</th>
+            <th>ي٣☀️</th><th>ي٣🌙</th>
+            <th>النتيجة</th>
+          </tr></thead>
+          <tbody id="exp-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-const PASS = "prof2024";
-let selectedM = false;
-let selectedE = false;
+// ===========================
+// CONFIG
+// ===========================
+const ADMIN_PASSWORD = 'prof2024'; // 🔑 غيّر كلمة المرور هنا
+const STORAGE_KEY = 'presenceAR_v3';
+const CONFIG_KEY = 'presenceDayConfig';
+const APP_URL = window.location.href.split('?')[0];
 
-// Système de détection de date
-const today = new Date();
-const dateString = today.toLocaleDateString('fr-FR'); // Ex: 31/03/2026
+// ===========================
+// UTILS - DATE
+// ===========================
+function todayStr() {
+  const d = new Date();
+  return d.toISOString().split('T')[0]; // YYYY-MM-DD
+}
 
+function formatDateAR(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('ar-DZ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function formatDateShortAR(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('ar-DZ', { day: 'numeric', month: 'short' });
+}
+
+// ===========================
+// DAY CONFIG
+// ===========================
+function getDayConfig() {
+  const def = { day1: '', day2: '', day3: '' };
+  try { return JSON.parse(localStorage.getItem(CONFIG_KEY)) || def; } catch(e) { return def; }
+}
+function saveDayConfig() {
+  const cfg = {
+    day1: document.getElementById('cfg-day1').value,
+    day2: document.getElementById('cfg-day2').value,
+    day3: document.getElementById('cfg-day3').value
+  };
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+  showToast('✅ تم حفظ إعدادات الأيام');
+}
+function loadDayConfigUI() {
+  const cfg = getDayConfig();
+  document.getElementById('cfg-day1').value = cfg.day1 || '';
+  document.getElementById('cfg-day2').value = cfg.day2 || '';
+  document.getElementById('cfg-day3').value = cfg.day3 || '';
+}
+
+// Get which day number matches today (1, 2, 3 or null)
+function getTodayDayNumber() {
+  const today = todayStr();
+  const cfg = getDayConfig();
+  if (cfg.day1 === today) return 1;
+  if (cfg.day2 === today) return 2;
+  if (cfg.day3 === today) return 3;
+  return null;
+}
+
+function getDayDate(n) {
+  const cfg = getDayConfig();
+  return cfg['day' + n] || '';
+}
+
+const DAY_NAMES = ['', 'اليوم الأول', 'اليوم الثاني', 'اليوم الثالث'];
+const SLOT_KEYS_BY_DAY = { 1: ['j1m','j1e'], 2: ['j2m','j2e'], 3: ['j3m','j3e'] };
+const ALL_SLOTS = ['j1m','j1e','j2m','j2e','j3m','j3e'];
+
+// ===========================
+// DATA
+// ===========================
+function loadStudents() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { return []; }
+}
+function saveStudents(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+// ===========================
+// PAGES
+// ===========================
 function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    if(id === 'page-student') {
-        document.getElementById('current-day-label').innerText = "📅 تاريخ اليوم: " + dateString;
-    }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
 }
 
-function toggleSlot(type) {
-    if(type === 'm') {
-        selectedM = !selectedM;
-        document.getElementById('btn-m').classList.toggle('active', selectedM);
-    } else {
-        selectedE = !selectedE;
-        document.getElementById('btn-e').classList.toggle('active', selectedE);
-    }
+// ===========================
+// QR CODE
+// ===========================
+function generateQR(containerId) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  const url = APP_URL + '?student=1';
+  try {
+    new QRCode(el, {
+      text: url,
+      width: 200, height: 200,
+      colorDark: '#0a0e1a',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  } catch(e) {
+    el.innerHTML = `<div style="width:200px;height:200px;background:#1a2235;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#64748b;text-align:center;padding:16px">رمز QR<br>يحتاج رفع على خادم</div>`;
+  }
+}
+function initQR() {
+  generateQR('qr-display');
+  const url = APP_URL + '?student=1';
+  const el = document.getElementById('qr-url-text');
+  if (el) el.textContent = url;
+  const dayN = getTodayDayNumber();
+  const lbl = document.getElementById('qr-day-label');
+  if (lbl) lbl.textContent = dayN ? DAY_NAMES[dayN] + ' — ' + formatDateAR(getDayDate(dayN)) : 'لم يُحدَّد يوم لهذا التاريخ';
+}
+function copyLink() {
+  const url = APP_URL + '?student=1';
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(() => showToast('🔗 تم نسخ الرابط'));
+  else { const el = document.createElement('textarea'); el.value = url; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); showToast('🔗 تم نسخ الرابط'); }
 }
 
-function submitPresence() {
-    const n = document.getElementById('nom').value.trim();
-    const p = document.getElementById('prenom').value.trim();
-    if(!n || !p) return alert("يرجى إدخال الاسم واللقب");
-    if(!selectedM && !selectedE) return alert("يرجى اختيار فترة واحدة على الأقل");
+// ===========================
+// STUDENT FORM - DYNAMIC
+// ===========================
+let slotState = {};
+ALL_SLOTS.forEach(k => slotState[k] = null);
 
-    const entry = {
-        nom: n,
-        prenom: p,
-        date: dateString,
-        m: selectedM ? "حاضر" : "غائب",
-        e: selectedE ? "حاضر" : "غائب",
-        time: today.toLocaleTimeString()
-    };
+function prepareStudentForm() {
+  const dayN = getTodayDayNumber();
+  const body = document.getElementById('student-body-content');
+  const sub = document.getElementById('student-header-sub');
 
-    let data = JSON.parse(localStorage.getItem('presence_db') || '[]');
-    data.push(entry);
-    localStorage.setItem('presence_db', JSON.stringify(data));
-    
-    document.getElementById('success-msg').innerText = p + " " + n + "\n" + dateString;
-    showPage('page-success');
+  if (!dayN) {
+    // No session today
+    const cfg = getDayConfig();
+    const hasDays = cfg.day1 || cfg.day2 || cfg.day3;
+    body.innerHTML = `
+      <div style="padding:20px">
+        <div class="no-session-card">
+          <div class="no-session-icon">😴</div>
+          <div class="no-session-title">لا توجد حصة اليوم</div>
+          <div class="no-session-sub">
+            ${hasDays
+              ? 'تاريخ اليوم لا يتطابق مع أي يوم دراسي مُحدَّد.<br>تواصل مع الأستاذ للتأكد من الجدول.'
+              : 'لم يقم الأستاذ بعد بتحديد تواريخ الأيام الدراسية.<br>يرجى انتظار التعليمات.'}
+          </div>
+          <div style="margin-top:16px;padding:12px;background:var(--surface);border-radius:10px;font-size:12px;color:var(--text-muted)">
+            📅 تاريخ اليوم: <strong style="color:var(--gold)">${formatDateAR(todayStr())}</strong>
+          </div>
+        </div>
+      </div>`;
+    sub.textContent = 'لا توجد حصة مجدولة اليوم';
+    return;
+  }
+
+  sub.textContent = DAY_NAMES[dayN] + ' — ' + formatDateAR(getDayDate(dayN));
+
+  // Reset only relevant slots
+  ALL_SLOTS.forEach(k => slotState[k] = null);
+  const [mkKey, ekKey] = SLOT_KEYS_BY_DAY[dayN];
+
+  body.innerHTML = `
+    <div style="padding:20px;padding-bottom:32px">
+      <div class="day-indicator">
+        <div class="day-ind-right">
+          <div class="day-ind-label">اليوم الدراسي</div>
+          <div class="day-ind-name">${DAY_NAMES[dayN]}</div>
+          <div class="day-ind-date">${formatDateAR(getDayDate(dayN))}</div>
+        </div>
+        <div class="day-ind-icon">${dayN === 1 ? '1️⃣' : dayN === 2 ? '2️⃣' : '3️⃣'}</div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-section-title">🪪 البيانات الشخصية</div>
+        <div class="field">
+          <label>اللقب (Nom)</label>
+          <input type="text" id="s-nom" placeholder="مثال: بن علي" autocomplete="family-name">
+        </div>
+        <div class="field">
+          <label>الاسم (Prénom)</label>
+          <input type="text" id="s-prenom" placeholder="مثال: أمينة" autocomplete="given-name">
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-section-title">📋 تسجيل الحضور — ${DAY_NAMES[dayN]}</div>
+        <div class="slots-block">
+          <div class="slots-header">
+            <span class="slots-header-title">${formatDateAR(getDayDate(dayN))}</span>
+          </div>
+          <div class="slots-grid">
+            <button class="slot-btn-item" id="sp-${mkKey}" onclick="cycleSlot('${mkKey}')">
+              <span class="slot-emoji">☀️</span>
+              <span class="slot-label">قبل الساعة 20:00</span>
+              <span class="slot-time">الحصة الأولى</span>
+              <span class="slot-badge" id="ss-${mkKey}">غير محدد</span>
+            </button>
+            <button class="slot-btn-item" id="sp-${ekKey}" onclick="cycleSlot('${ekKey}')">
+              <span class="slot-emoji">🌙</span>
+              <span class="slot-label">بعد الساعة 20:00</span>
+              <span class="slot-time">الحصة الثانية</span>
+              <span class="slot-badge" id="ss-${ekKey}">غير محدد</span>
+            </button>
+          </div>
+          <div class="slot-hint">اضغط على الحصة لتغيير الحالة: غير محدد ← حاضر ← غائب</div>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="submitPresence(${dayN})">✅ تأكيد الحضور</button>
+    </div>`;
 }
 
-function login() {
-    if(document.getElementById('pwd').value === PASS) {
-        loadAdmin();
-        showPage('page-admin');
-    } else {
-        alert("كلمة سر خاطئة");
-    }
+function cycleSlot(key) {
+  const cur = slotState[key];
+  slotState[key] = cur === null ? 'present' : cur === 'present' ? 'absent' : null;
+  updateSlotUI(key);
 }
+
+function updateSlotUI(key) {
+  const btn = document.getElementById('sp-' + key);
+  const lbl = document.getElementById('ss-' + key);
+  if (!btn || !lbl) return;
+  const val = slotState[key];
+  btn.className = 'slot-btn-item';
+  if (val === 'present') { btn.classList.add('present'); lbl.textContent = '✓ حاضر'; }
+  else if (val === 'absent') { btn.classList.add('absent'); lbl.textContent = '✗ غائب'; }
+  else { lbl.textContent = 'غير محدد'; }
+}
+
+function submitPresence(dayN) {
+  const nom = document.getElementById('s-nom')?.value.trim();
+  const prenom = document.getElementById('s-prenom')?.value.trim();
+  if (!nom || !prenom) { showToast('⚠️ أدخل اللقب والاسم', '#f0a500'); return; }
+
+  const student = {
+    id: Date.now(),
+    nom, prenom,
+    date: new Date().toLocaleString('ar-DZ'),
+    dateStr: todayStr(),
+    dayN,
+    slots: { ...slotState }
+  };
+
+  const students = loadStudents();
+  students.push(student);
+  saveStudents(students);
+
+  // Success page
+  document.getElementById('suc-name').textContent = nom + ' ' + prenom;
+  const [mk, ek] = SLOT_KEYS_BY_DAY[dayN];
+  const slotLine = (key, label) => {
+    const v = student.slots[key];
+    const disp = v === 'present'
+      ? `<span style="color:var(--green);font-weight:700">✓ حاضر</span>`
+      : v === 'absent'
+      ? `<span style="color:var(--red);font-weight:700">✗ غائب</span>`
+      : `<span style="color:var(--text-muted)">— غير محدد</span>`;
+    return `<div class="sum-row"><span class="sum-label">${label}</span>${disp}</div>`;
+  };
+  document.getElementById('suc-summary').innerHTML = `
+    <div class="sum-row"><span class="sum-label">اليوم الدراسي</span><span style="color:var(--gold);font-weight:700">${DAY_NAMES[dayN]}</span></div>
+    <div class="sum-row"><span class="sum-label">التاريخ</span><span style="color:var(--text-soft)">${formatDateAR(getDayDate(dayN))}</span></div>
+    ${slotLine(mk, '☀️ قبل 20:00')}
+    ${slotLine(ek, '🌙 بعد 20:00')}
+  `;
+  showPage('page-success');
+}
+
+function resetAndGoBack() {
+  ALL_SLOTS.forEach(k => slotState[k] = null);
+  showPage('page-landing');
+}
+
+// ===========================
+// ADMIN
+// ===========================
+function doLogin() {
+  const pwd = document.getElementById('admin-pwd').value;
+  if (pwd === ADMIN_PASSWORD) {
+    document.getElementById('login-err').style.display = 'none';
+    document.getElementById('admin-pwd').value = '';
+    loadAdmin();
+    showPage('page-admin');
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+function logout() { showPage('page-landing'); }
 
 function loadAdmin() {
-    const data = JSON.parse(localStorage.getItem('presence_db') || '[]');
-    document.getElementById('count').innerText = data.length;
-    document.getElementById('admin-date').innerText = dateString;
-    
-    let html = "";
-    data.reverse().forEach(s => {
-        html += `<div class="card">
-            <b>${s.nom} ${s.prenom}</b><br>
-            <small>${s.date} - ${s.time}</small><br>
-            <span style="color:${s.m==='حاضر'?'green':'red'}">☀️ ${s.m}</span> | 
-            <span style="color:${s.e==='حاضر'?'green':'red'}">🌙 ${s.e}</span>
-        </div>`;
-    });
-    document.getElementById('student-list').innerHTML = html || "لا يوجد مسجلين بعد";
+  document.getElementById('admin-date-row').textContent = '📅 ' + formatDateAR(todayStr());
+  const students = loadStudents();
+  renderAdminStats(students);
+  renderAdminList(students);
+  loadDayConfigUI();
+}
+
+function calcScore(slots) { return ALL_SLOTS.filter(k => slots[k] === 'present').length; }
+function getMaxSlots(dayN) { return dayN ? 2 : 6; }
+
+function renderAdminStats(students) {
+  const total = students.length;
+  const full = students.filter(s => {
+    const max = getMaxSlots(s.dayN);
+    return calcScore(s.slots) === max;
+  }).length;
+  const zero = students.filter(s => calcScore(s.slots) === 0).length;
+  const partial = total - full - zero;
+  document.getElementById('a-total').textContent = total;
+  document.getElementById('a-full').textContent = full;
+  document.getElementById('a-partial').textContent = partial;
+  document.getElementById('a-zero').textContent = zero;
+  document.getElementById('list-count-lbl').textContent = `الطلاب المسجلون (${total})`;
+}
+
+function renderAdminList(students) {
+  const container = document.getElementById('admin-list-container');
+  if (!students.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">🎓</div><div class="empty-title">لا يوجد طلاب مسجلون بعد</div><div class="empty-sub">سيظهر الطلاب هنا بعد مسح رمز QR وتسجيل الحضور</div></div>`;
+    return;
+  }
+
+  // Group by day
+  const days = [1, 2, 3];
+  let html = '';
+
+  days.forEach(d => {
+    const dayStudents = students.filter(s => s.dayN === d);
+    if (!dayStudents.length) return;
+    const dateStr = getDayDate(d);
+    html += `<div style="margin-bottom:6px;margin-top:14px"><span style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:900;color:var(--gold)">${DAY_NAMES[d]}${dateStr ? ' — ' + formatDateShortAR(dateStr) : ''}</span> <span style="font-size:11px;color:var(--text-muted)">(${dayStudents.length} طالب)</span></div>`;
+    html += dayStudents.map(s => studentRowHTML(s)).join('');
+  });
+
+  // Students without dayN
+  const noDay = students.filter(s => !s.dayN);
+  if (noDay.length) {
+    html += `<div style="margin-bottom:6px;margin-top:14px"><span style="font-family:'Cairo',sans-serif;font-size:13px;font-weight:900;color:var(--text-muted)">بدون يوم محدد</span></div>`;
+    html += noDay.map(s => studentRowHTML(s)).join('');
+  }
+
+  container.innerHTML = html;
+}
+
+function studentRowHTML(s) {
+  const score = calcScore(s.slots);
+  const initials = (s.nom[0] || '') + (s.prenom[0] || '');
+  const dayN = s.dayN || 0;
+  const dayKeys = dayN ? SLOT_KEYS_BY_DAY[dayN] : [];
+
+  // Dots: one per slot
+  const dots = ALL_SLOTS.map(k => {
+    const v = s.slots[k];
+    const cls = v === 'present' ? 'p' : v === 'absent' ? 'a' : '';
+    return `<div class="dot ${cls}"></div>`;
+  }).join('');
+
+  // Detail: only the day's slots
+  const [mk, ek] = dayKeys.length ? dayKeys : ['j1m','j1e'];
+  const detailDayCol = `
+    <div class="detail-day-col">
+      <div class="dd-title">${DAY_NAMES[dayN] || '—'}</div>
+      <div class="dd-date">${formatDateShortAR(getDayDate(dayN))}</div>
+      ${slotTagHTML(s.slots[mk], 'morning')}
+      ${slotTagHTML(s.slots[ek], 'evening')}
+    </div>`;
+
+  return `
+  <div class="student-row">
+    <div class="srow-header" onclick="toggleRow(${s.id})">
+      <div class="srow-avatar">${initials.toUpperCase()}</div>
+      <div class="srow-info">
+        <div class="srow-name">${s.nom} ${s.prenom}</div>
+        <div class="srow-meta">${score}/2 حضور · ${DAY_NAMES[dayN] || ''} · ${s.date || ''}</div>
+      </div>
+      <div class="srow-side">
+        <div class="dots-row">${dots}</div>
+        <span class="chev" id="chev-${s.id}">‹</span>
+      </div>
+    </div>
+    <div class="srow-detail" id="row-${s.id}">
+      <div class="detail-days">${detailDayCol}</div>
+      <button class="del-btn" onclick="deleteStudent(${s.id})">🗑️ حذف هذا الطالب</button>
+    </div>
+  </div>`;
+}
+
+function slotTagHTML(val, period) {
+  const icon = period === 'morning' ? '☀️' : '🌙';
+  const label = period === 'morning' ? 'قبل 20:00' : 'بعد 20:00';
+  if (val === 'present') return `<span class="slot-tag ${period==='morning'?'st-p-m':'st-p-e'}">${icon} حاضر</span>`;
+  if (val === 'absent') return `<span class="slot-tag st-absent">${icon} غائب</span>`;
+  return `<span class="slot-tag st-none">${icon} —</span>`;
+}
+
+function toggleRow(id) {
+  document.getElementById('row-' + id)?.classList.toggle('open');
+  const c = document.getElementById('chev-' + id);
+  if (c) c.classList.toggle('open');
+}
+
+function deleteStudent(id) {
+  if (!confirm('هل تريد حذف هذا الطالب؟')) return;
+  let students = loadStudents().filter(s => s.id !== id);
+  saveStudents(students);
+  loadAdmin();
+  showToast('🗑️ تم الحذف');
+}
+
+function renderSlotBars(students) {
+  const total = students.length;
+  const container = document.getElementById('slot-bars');
+  if (!total) { container.innerHTML = '<div style="color:var(--text-muted);text-align:center;font-size:13px;padding:16px">لا توجد بيانات</div>'; return; }
+
+  const slots = [
+    { key:'j1m', label:'اليوم الأول ☀️ قبل 20:00', color:'#f0a500' },
+    { key:'j1e', label:'اليوم الأول 🌙 بعد 20:00', color:'#3b82f6' },
+    { key:'j2m', label:'اليوم الثاني ☀️ قبل 20:00', color:'#f0a500' },
+    { key:'j2e', label:'اليوم الثاني 🌙 بعد 20:00', color:'#3b82f6' },
+    { key:'j3m', label:'اليوم الثالث ☀️ قبل 20:00', color:'#f0a500' },
+    { key:'j3e', label:'اليوم الثالث 🌙 بعد 20:00', color:'#3b82f6' },
+  ];
+  container.innerHTML = slots.map(s => {
+    const count = students.filter(x => x.slots[s.key] === 'present').length;
+    const pct = Math.round((count / total) * 100);
+    return `
+    <div class="slot-bar">
+      <div class="bar-label"><span>${s.label}</span><span style="color:${s.color}">${count}/${total} (${pct}%)</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${s.color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderExportTable(students) {
+  const body = document.getElementById('exp-body');
+  if (!students.length) { body.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:20px">لا توجد بيانات</td></tr>'; return; }
+  body.innerHTML = students.map(s => {
+    const cells = ALL_SLOTS.map(k => {
+      const v = s.slots[k];
+      if (v === 'present') return `<td class="tp">✓</td>`;
+      if (v === 'absent') return `<td class="ta">✗</td>`;
+      return `<td class="tn">—</td>`;
+    }).join('');
+    return `<tr><td><strong>${s.nom}</strong></td><td>${s.prenom}</td>${cells}<td><strong>${calcScore(s.slots)}/2</strong></td></tr>`;
+  }).join('');
 }
 
 function exportCSV() {
-    const data = JSON.parse(localStorage.getItem('presence_db') || '[]');
-    let csv = "\ufeffاللقب,الاسم,التاريخ,بعد العصرh,بعد المغرب,الوقت\n";
-    data.forEach(s => {
-        csv += `${s.nom},${s.prenom},${s.date},${s.m},${s.e},${s.time}\n`;
-    });
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "presence_" + dateString + ".csv";
-    link.click();
+  const students = loadStudents();
+  const headers = ['اللقب','الاسم','ي١ ق20','ي١ ب20','ي٢ ق20','ي٢ ب20','ي٣ ق20','ي٣ ب20','النتيجة','التاريخ','اليوم الدراسي'];
+  const rows = students.map(s => [
+    s.nom, s.prenom,
+    ...ALL_SLOTS.map(k => s.slots[k]==='present'?'ح':s.slots[k]==='absent'?'غ':'—'),
+    calcScore(s.slots)+'/2',
+    s.dateStr || '',
+    DAY_NAMES[s.dayN] || ''
+  ]);
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'حضور_الطلاب.csv';
+  a.click();
+  showToast('⬇️ تم تصدير الملف');
 }
 
-function clearData() {
-    if(confirm("هل أنت متأكد من مسح جميع البيانات؟")) {
-        localStorage.removeItem('presence_db');
-        loadAdmin();
-    }
+function resetAll() {
+  if (!confirm('هل أنت متأكد من حذف جميع البيانات؟ هذا الإجراء لا يمكن التراجع عنه!')) return;
+  saveStudents([]);
+  loadAdmin();
+  showToast('🗑️ تم حذف جميع البيانات', '#ef4444');
 }
+
+// ===========================
+// ADMIN TABS
+// ===========================
+const TABS = ['list','stats','config','qr','export'];
+function switchTab(name) {
+  TABS.forEach(t => {
+    document.getElementById('atab-' + t).style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.atab').forEach((b, i) => {
+    b.classList.toggle('active', TABS[i] === name);
+  });
+  if (name === 'stats') renderSlotBars(loadStudents());
+  if (name === 'export') renderExportTable(loadStudents());
+  if (name === 'qr') { generateQR('admin-qr'); document.getElementById('admin-qr-url').textContent = APP_URL + '?student=1'; }
+  if (name === 'list') renderAdminList(loadStudents());
+}
+
+// ===========================
+// TOAST
+// ===========================
+function showToast(msg, bg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = bg || 'var(--card)';
+  t.style.color = bg ? '#fff' : 'var(--text)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===========================
+// INIT
+// ===========================
+window.onload = function() {
+  // Landing date
+  document.getElementById('landing-date').textContent = '📅 ' + formatDateAR(todayStr());
+
+  // Auto open student form if QR scanned
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('student') === '1') {
+    showPage('page-student');
+    prepareStudentForm();
+    return;
+  }
+
+  initQR();
+};
 </script>
 </body>
 </html>
