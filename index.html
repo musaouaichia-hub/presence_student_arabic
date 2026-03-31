@@ -1322,7 +1322,7 @@ function studentRowHTML(s) {
 
 function slotTagHTML(val, period) {
   const icon = period === 'morning' ? '☀️' : '🌙';
-  const label = period === 'morning' ? ' : 'بعد 20:00';
+  const label = period === 'morning' ? 'بعد المغرب' : 'بعد العصر';
   if (val === 'present') return `<span class="slot-tag ${period==='morning'?'st-p-m':'st-p-e'}">${icon} حاضر</span>`;
   if (val === 'absent') return `<span class="slot-tag st-absent">${icon} غائب</span>`;
   return `<span class="slot-tag st-none">${icon} —</span>`;
@@ -1348,12 +1348,12 @@ function renderSlotBars(students) {
   if (!total) { container.innerHTML = '<div style="color:var(--text-muted);text-align:center;font-size:13px;padding:16px">لا توجد بيانات</div>'; return; }
 
   const slots = [
-    { key:'j1m', label:'اليوم الأول ☀️ قبل 20:00', color:'#f0a500' },
-    { key:'j1e', label:'اليوم الأول 🌙 بعد 20:00', color:'#3b82f6' },
-    { key:'j2m', label:'اليوم الثاني ☀️ قبل 20:00', color:'#f0a500' },
-    { key:'j2e', label:'اليوم الثاني 🌙 بعد 20:00', color:'#3b82f6' },
-    { key:'j3m', label:'اليوم الثالث ☀️ قبل 20:00', color:'#f0a500' },
-    { key:'j3e', label:'اليوم الثالث 🌙 بعد 20:00', color:'#3b82f6' },
+    { key:'j1m', label:'اليوم الأول ☀️ بعد العصر', color:'#f0a500' },
+    { key:'j1e', label:'اليوم الأول 🌙 بعد المغرب', color:'#3b82f6' },
+    { key:'j2m', label:'اليوم الثاني ☀️ بعد العصر', color:'#f0a500' },
+    { key:'j2e', label:'اليوم الثاني 🌙 بعد المغرب', color:'#3b82f6' },
+    { key:'j3m', label:'اليوم الثالث ☀️ بعد العصر', color:'#f0a500' },
+    { key:'j3e', label:'اليوم الثالث 🌙 بعد المغرب', color:'#3b82f6' },
   ];
   container.innerHTML = slots.map(s => {
     const count = students.filter(x => x.slots[s.key] === 'present').length;
@@ -1382,7 +1382,7 @@ function renderExportTable(students) {
 
 function exportCSV() {
   const students = loadStudents();
-  const headers = ['اللقب','الاسم','ي١ ق20','ي١ ب20','ي٢ ق20','ي٢ ب20','ي٣ ق20','ي٣ ب20','النتيجة','التاريخ','اليوم الدراسي'];
+  const headers = ['اللقب','الاسم','ي١ ب_العصر','ي١ ب20','ي٢ ق20','ي٢ ب20','ي٣ ق20','ي٣ ب20','النتيجة','التاريخ','اليوم الدراسي'];
   const rows = students.map(s => [
     s.nom, s.prenom,
     ...ALL_SLOTS.map(k => s.slots[k]==='present'?'ح':s.slots[k]==='absent'?'غ':'—'),
