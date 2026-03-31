@@ -1419,7 +1419,7 @@ function switchTab(name) {
   });
   if (name === 'stats') renderSlotBars(loadStudents());
   if (name === 'export') renderExportTable(loadStudents());
-  if (name === 'qr') { generateQR('admin-qr'); document.getElementById('admin-qr-url').textContent = APP_URL + '?student=1'; }
+  if (name === 'qr') { generateQR('admin-qr'); document.getElementById('admin-qr-url').textContent = APP_URL; }
   if (name === 'list') renderAdminList(loadStudents());
 }
 
