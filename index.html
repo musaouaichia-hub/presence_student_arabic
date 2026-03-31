@@ -124,6 +124,9 @@ input { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-ra
     <button class="btn-submit" style="background:var(--red); margin-top:10px" onclick="clearData()">🗑️ مسح كل البيانات</button>
     <div class="page" id="page-success">
     <div style="text-align:center; margin-top: 50px;">
+</div>
+      <div class="page" id="page-success">
+    <div style="text-align:center; margin-top: 50px;">
         <h1 style="font-size:60px">🎉</h1>
         <h2>تم التسجيل بنجاح!</h2>
         <p id="success-msg"></p>
@@ -210,7 +213,7 @@ function loadAdmin() {
 
 function exportCSV() {
     const data = JSON.parse(localStorage.getItem('presence_db') || '[]');
-    let csv = "\ufeffاللقب,الاسم,التاريخ,قبل 20h,بعد 20h,الوقت\n";
+    let csv = "\ufeffاللقب,الاسم,التاريخ,بعد العصرh,بعد المغرب,الوقت\n";
     data.forEach(s => {
         csv += `${s.nom},${s.prenom},${s.date},${s.m},${s.e},${s.time}\n`;
     });
