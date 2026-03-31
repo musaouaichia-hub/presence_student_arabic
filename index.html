@@ -1061,33 +1061,70 @@ let slotState = {};
 ALL_SLOTS.forEach(k => slotState[k] = null);
 
 function prepareStudentForm() {
-  const dayN = getTodayDayNumber();
-  const body = document.getElementById('student-body-content');
-  const sub = document.getElementById('student-header-sub');
-
-  if (!dayN) {
-    // No session today
+    const container = document.getElementById('student-body-content');
     const cfg = getDayConfig();
-    const hasDays = cfg.day1 || cfg.day2 || cfg.day3;
-    body.innerHTML = `
-      <div style="padding:20px">
-        <div class="no-session-card">
-          <div class="no-session-icon">😴</div>
-          <div class="no-session-title">لا توجد حصة اليوم</div>
-          <div class="no-session-sub">
-            ${hasDays
-              ? 'تاريخ اليوم لا يتطابق مع أي يوم دراسي مُحدَّد.<br>تواصل مع الأستاذ للتأكد من الجدول.'
-              : 'لم يقم الأستاذ بعد بتحديد تواريخ الأيام الدراسية.<br>يرجى انتظار التعليمات.'}
-          </div>
-          <div style="margin-top:16px;padding:12px;background:var(--surface);border-radius:10px;font-size:12px;color:var(--text-muted)">
-            📅 تاريخ اليوم: <strong style="color:var(--gold)">${formatDateAR(todayStr())}</strong>
-          </div>
-        </div>
-      </div>`;
-    sub.textContent = 'لا توجد حصة مجدولة اليوم';
-    return;
-  }
+    const today = todayStr(); // Récupère la date du jour (YYYY-MM-DD)
 
+    // Déterminer quel jour afficher (1, 2 ou 3)
+    let activeDay = 0;
+    if (today === cfg.day1) activeDay = 1;
+    else if (today === cfg.day2) activeDay = 2;
+    else if (today === cfg.day3) activeDay = 3;
+
+    // --- FORCE L'AFFICHAGE SI LE FIX NE MARCHE PAS ---
+    // Si aucune date ne correspond, on affiche par défaut le "Jour 1" 
+    // pour que l'étudiant ne soit pas bloqué.
+    if (activeDay === 0) {
+        activeDay = 1; 
+    }
+
+    const dayName = activeDay === 1 ? "اليوم الأول" : (activeDay === 2 ? "اليوم الثاني" : "اليوم الثالث");
+    const displayDate = activeDay === 1 ? cfg.day1 : (activeDay === 2 ? cfg.day2 : cfg.day3);
+
+    container.innerHTML = `
+        <div class="day-indicator">
+            <div class="day-ind-right">
+                <div class="day-ind-label">تسجيل الحضور لـ :</div>
+                <div class="day-ind-name">${dayName}</div>
+                <div class="day-ind-date">${formatDateAR(displayDate || today)}</div>
+            </div>
+            <div class="day-ind-icon">📅</div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-section-title">👤 المعلومات الشخصية</div>
+            <div class="field">
+                <label>اللقب (Nom)</label>
+                <input type="text" id="s-nom" placeholder="أدخل لقبك هنا...">
+            </div>
+            <div class="field">
+                <label>الاسم (Prénom)</label>
+                <input type="text" id="s-prenom" placeholder="أدخل اسمك هنا...">
+            </div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-section-title">⏱️ اختيار الحصة</div>
+            <div class="slots-block">
+                <div class="slots-grid">
+                    <button class="slot-btn-item" id="sbtn-m" onclick="toggleSlot('m')">
+                        <div class="slot-emoji">☀️</div>
+                        <div class="slot-label">الحصة الصباحية</div>
+                        <div class="slot-badge" id="badge-m">غائب</div>
+                    </button>
+                    <button class="slot-btn-item" id="sbtn-e" onclick="toggleSlot('e')">
+                        <div class="slot-emoji">🌙</div>
+                        <div class="slot-label">الحصة المسائية</div>
+                        <div class="slot-badge" id="badge-e">غائب</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" id="active-day-num" value="${activeDay}">
+        <button class="submit-btn" onclick="submitPresence()">✅ تأكيد تسجيل الحضور</button>
+    `;
+}
   sub.textContent = DAY_NAMES[dayN] + ' — ' + formatDateAR(getDayDate(dayN));
 
   // Reset only relevant slots
